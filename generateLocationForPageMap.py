@@ -1,22 +1,38 @@
-import geopandas as pd
+import pandas as pd
 from geopy.extra.rate_limiter import RateLimiter
 from geopy.geocoders import Nominatim
 import folium
 from geopy.exc import GeocoderTimedOut
 from tqdm import tqdm
+import numpy as np
+import time
 
-df = pd.read_file('nabupage.csv', encoding='utf8')
+def list_has_digit(addresses):
+    if not isinstance(addresses, list):
+        return ''
+    for element in addresses:
+        if any(map(str.isdigit, element)):
+            return str(element)
+
+df = pd.read_csv('nabupage.csv', encoding='utf8')
 
 locator = Nominatim(user_agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.149 Safari/537.36")
 geocode = RateLimiter(locator.geocode, min_delay_seconds=1)
 # df = df[1:10]
+
+
+df['Splitstrasse'] = df['Strasse'].str.split('/')
+df['Splitstrasse'] = df['Splitstrasse'].apply(list_has_digit)
+df['Splitstrasse'] = df['Splitstrasse'].str.split(',')
+df['Splitstrasse'] = df['Splitstrasse'].apply(list_has_digit)
 plz = df['PLZ'].copy()
-df['ADDRESS'] = df['Strasse'].str.cat(plz, sep=', ')
+plz = plz.apply(str)
+df['ADDRESS'] = df['Splitstrasse'].str.cat(plz, sep=', ')
 df['ADDRESS'] = df['ADDRESS'].str.cat(['Berlin, Deutschland'] * len(df['ADDRESS']), sep=', ')
 tqdm.pandas()
 df['location'] = df['ADDRESS'].progress_apply(geocode,timeout=10)
 df['point'] = df['location'].progress_apply(lambda loc: tuple(loc.point) if loc else (None,None,None))
-df[['latitude', 'longitude', 'altitude']] = pd.GeoDataFrame(df['point'].tolist(), index=df.index)
+df[['latitude', 'longitude', 'altitude']] = pd.DataFrame(df['point'].tolist(), index=df.index)
 
 df.to_csv('nabupage_longlat.csv', index=False, header=True)
 df.to_excel('nabupage_longlat.xlsx', index=False)
