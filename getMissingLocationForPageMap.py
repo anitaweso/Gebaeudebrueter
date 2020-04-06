@@ -14,25 +14,29 @@ def list_has_digit(addresses):
         if any(map(str.isdigit, element)):
             return str(element)
 
-df = pd.read_csv('nabupage.csv', encoding='utf8')
+df = pd.read_csv('nabupage_longlat.csv', encoding='utf8')
 
 locator = Nominatim(user_agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.149 Safari/537.36")
 geocode = RateLimiter(locator.geocode, min_delay_seconds=1)
 # df = df[1:10]
+missing = df[df['longitude'].isnull()].copy()
 
-df['Splitstrasse'] = df['Strasse'].str.split('/')
-df['Splitstrasse'] = df['Splitstrasse'].apply(list_has_digit)
-df['Splitstrasse'] = df['Splitstrasse'].str.split(',')
-df['Splitstrasse'] = df['Splitstrasse'].apply(list_has_digit)
-plz = df['PLZ'].copy()
+missing['Splitstrasse'] = missing['Strasse'].str.split('/')
+missing['Splitstrasse'] = missing['Splitstrasse'].apply(list_has_digit)
+missing['Splitstrasse'] = missing['Splitstrasse'].str.split(',')
+missing['Splitstrasse'] = missing['Splitstrasse'].apply(list_has_digit)
+plz = missing['PLZ'].copy()
 plz = plz.apply(str)
-df['ADDRESS'] = df['Splitstrasse'].str.cat(plz, sep=', ')
-df['ADDRESS'] = df['ADDRESS'].str.cat(df['Ort'], sep=', ')
-df['ADDRESS'] = df['ADDRESS'].str.cat(['Deutschland'] * len(df['ADDRESS']), sep=', ')
+missing['ADDRESS'] = missing['Splitstrasse'].str.cat(plz, sep=', ')
+missing['ADDRESS'] = missing['ADDRESS'].str.cat(df['Ort'], sep=', ')
+missing['ADDRESS'] = missing['ADDRESS'].str.cat(['Deutschland'] * len(missing['ADDRESS']), sep=', ')
 tqdm.pandas()
-df['location'] = df['ADDRESS'].progress_apply(geocode,timeout=10)
-df['point'] = df['location'].progress_apply(lambda loc: tuple(loc.point) if loc else (None,None,None))
-df[['latitude', 'longitude', 'altitude']] = pd.DataFrame(df['point'].tolist(), index=df.index)
+missing['location'] = missing['ADDRESS'].progress_apply(geocode,timeout=10)
+missing['point'] = missing['location'].progress_apply(lambda loc: tuple(loc.point) if loc else (None,None,None))
+missing[['latitude', 'longitude', 'altitude']] = pd.DataFrame(missing['point'].tolist(), index=missing.index)
+print(missing['ID'])
+index = missing.index
+df.loc[index,:] = missing
 
 df.to_csv('nabupage_longlat.csv', index=False, header=True)
 df.to_excel('nabupage_longlat.xlsx', index=False)

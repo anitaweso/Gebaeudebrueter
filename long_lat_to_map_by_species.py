@@ -35,6 +35,8 @@ popups = []
 colors = []
 url = 'http://www.gebaeudebrueter-in-berlin.de/index.php'
 for index, row in df.iterrows():
+    if row['ID'] in (1214, 1598):
+        continue
     color = 'orange'
     fund = 'andere Art'
     grp = andere
@@ -69,18 +71,21 @@ for index, row in df.iterrows():
         continue
 
     if row['Ersatz']:
-        ersatz = 'Ja'
+        ersatz = 'Hier wurden Ersatzmaßnahmen errichtet'
     else:
-        ersatz = 'Nein'
+        ersatz = 'Ersatzmaßnahmen nicht vorhanden'
+
     if row['Sanierung']:
-        sanierung = 'Ja'
+        sanierung = 'Hier hat eine Sanierung stattgefunden'
     else:
-        sanierung = 'Nein'
+        sanierung = 'Bisher hat keine Sanierung stattgefunden'
+
+    besonderes  = 'Kein Eintrag' if str(row['Besonderes']) == 'nan' else row['Besonderes']
 
     popup = folium.Popup('<b>Fund: </b>' + fund + '<br/><br/><b>Adresse</b><br/>' + str(row['Strasse']) + ', ' + str(row['PLZ']) + ' ' + str(row['Ort']) +
                          '<br/><br/><b>Erstbeobachtung: </b>' + str(row['Erstbeobachtung']) +
                          '<br/><br/><b>Beschreibung</b><br/>' + str(row['Beschreibung']) +
-                         '<br/><br/><b>Besonderes</b><br/>' + str(row['Besonderes']) +
+                         '<br/><br/><b>Besonderes</b><br/>' + str(besonderes) +
                          '<br/><br/><b>Ersatz: </b>' + ersatz +
                          '<br/><br/><b>Sanierung: </b>' + sanierung +
                          '<br/><br/><b>Link zur Datenbank</b><br/><a href=' + url + '?ID=' + str(row['ID']) + '>' + str(row['ID']) + '</a>'
@@ -131,7 +136,7 @@ folium.LayerControl(collapsed=False, ).add_to(map1)
 
 #folium.LayerControl(collapsed=False).add_to(map1)
 
-map1.save('GebaeudebrueterBerlin.html')
+map1.save('GebaeudebrueterBerlinBySpecies.html')
 
 
 # print("Latitude = {}, Longitude = {}".format(dflatitude, location.longitude))
