@@ -78,7 +78,7 @@ for index, row in df.iterrows():
     if row['Sanierung']:
         sanierung = 'Hier hat eine Sanierung stattgefunden'
     else:
-        sanierung = 'Bisher hat keine Sanierung stattgefunden'
+        sanierung = 'Kein Eintrag'
 
     besonderes  = 'Kein Eintrag' if str(row['Besonderes']) == 'nan' else row['Besonderes']
 
