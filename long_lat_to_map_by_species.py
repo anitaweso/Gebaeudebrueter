@@ -73,7 +73,7 @@ for index, row in df.iterrows():
     if row['Ersatz']:
         ersatz = 'Hier wurden Ersatzmaßnahmen errichtet'
     else:
-        ersatz = 'Ersatzmaßnahmen nicht vorhanden'
+        ersatz = 'Kein Eintrag'
 
     if row['Sanierung']:
         sanierung = 'Hier hat eine Sanierung stattgefunden'
