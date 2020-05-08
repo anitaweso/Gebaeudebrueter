@@ -31,7 +31,7 @@ create table geolocation_google
 (
     id                 INTEGER
         primary key,
-    gebaeudebrueter_id INTEGER not null,
+    web_id             INTEGER not null unique,
     longitude          REAL    not null,
     latitude           REAL    not null,
     location           TEXT    not null,
@@ -40,9 +40,8 @@ create table geolocation_google
 
 create table geolocation_osm
 (
-    id                 INTEGER
-        primary key,
-    gebaeudebrueter_id INTEGER not null,
+    id                 INTEGER primary key,
+    web_id INTEGER not null unique,
     longitude          REAL    not null,
     latitude           REAL    not null,
     location           TEXT    not null,
