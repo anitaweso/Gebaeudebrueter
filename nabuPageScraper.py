@@ -117,7 +117,8 @@ def order_id(ahref):
 ######################
 
 only_get_new_ids = False
-
+# False: gets all data
+# True: only updates new data starting from the last known largest web id
 
 try:
     sqliteConnection = sqlite3.connect('brueter.sqlite')

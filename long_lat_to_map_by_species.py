@@ -46,6 +46,7 @@ data = cursor.fetchall()
 for dataset in data:
     (web_id, bezirk, plz, ort, strasse, anhang, erstbeobachtung, beschreibung, besonderes, mauersegler,
      kontrolle, sperling, ersatz, schwalbe, wichtig, star, fledermaus, verloren, andere, longitude, latitude) = dataset
+
     if web_id in (1214, 1598, 1784):
         continue
     color = 'orange'

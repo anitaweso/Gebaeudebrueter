@@ -1,4 +1,3 @@
-import pandas as pd
 from geopy.extra.rate_limiter import RateLimiter
 from geopy.geocoders import Nominatim
 import sqlite3
@@ -25,7 +24,7 @@ gmaps = googlemaps.Client(key=key)
 
 cursor.execute('SELECT web_id, strasse, ort, plz from gebaeudebrueter where new=1')
 data = cursor.fetchall()
-df = pd.read_csv('nabupage.csv', encoding='utf8')
+# only updates new entries which are set to new=1
 
 locator = Nominatim(user_agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.149 Safari/537.36")
 geocode = RateLimiter(locator.geocode, min_delay_seconds=1)
