@@ -114,8 +114,8 @@ folium.LayerControl(collapsed=False, ).add_to(map1)
 
 legend_html = '''
      <div style="position: fixed;
-    bottom: 0px; left: 0px; width: 150px; height: 25px;
-     border:0px; z-index:9999; font-size:14px; background: white; padding-left: 5px; padding-top: 3px;
+    bottom: 0px; left: 0px; width: 130px; height: 20px;
+     border:0px; z-index:9999; font-size:12px; background: white; padding-left: 5px; padding-top: 3px;
      ">erstellt am '''
 legend_html = legend_html + today + '</div>'
 
