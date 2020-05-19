@@ -2,6 +2,7 @@ import folium
 from folium import plugins
 import sqlite3
 from datetime import datetime
+from datetime import date
 
 try:
     sqliteConnection = sqlite3.connect('brueter.sqlite')
@@ -14,7 +15,8 @@ map1 = folium.Map(
     tiles=None,
     zoom_start=12
 )
-folium.TileLayer('cartodbpositron', name='Art').add_to(map1)
+today = date.today().strftime('%d.%m.%Y')
+folium.TileLayer('cartodbpositron', control=False, name='erstellt am ' + today + '<br/>Art').add_to(map1)
 
 marker_cluster = plugins.MarkerCluster(control=False)
 map1.add_child(marker_cluster)
@@ -109,6 +111,16 @@ for dataset in data:
 
 
 folium.LayerControl(collapsed=False, ).add_to(map1)
+
+legend_html = '''
+     <div style="position: fixed;
+    bottom: 0px; left: 0px; width: 150px; height: 25px;
+     border:0px; z-index:9999; font-size:14px; background: white; padding-left: 5px; padding-top: 3px;
+     ">erstellt am '''
+legend_html = legend_html + today + '</div>'
+
+
+map1.get_root().html.add_child(folium.Element(legend_html))
 
 map1.save('GebaeudebrueterBerlinBySpecies.html')
 if (sqliteConnection):
