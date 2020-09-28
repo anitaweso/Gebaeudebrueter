@@ -57,6 +57,8 @@ def sanitize_date(date_text):
         date_text = '01.06.2020'
     if date_text == 'Mai 2020':
         date_text = '01.05.2020'
+    if date_text == '30.06./02.07.18':
+        date_text = '02.07.2018'
 
     try:
         date = parser.parse(date_text,dayfirst=True)
