@@ -26,7 +26,7 @@ cursor.execute('SELECT web_id, strasse, ort, plz from gebaeudebrueter where new=
 data = cursor.fetchall()
 # only updates new entries which are set to new=1
 
-locator = Nominatim(user_agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.149 Safari/537.36")
+locator = Nominatim(scheme='http', user_agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.149 Safari/537.36")
 geocode = RateLimiter(locator.geocode, min_delay_seconds=1)
 
 index = 0
